@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "cadastro.h"
-#include "listar.h"
+#include "listar_hospedes.h"
 
 int numero_reserva = 0;
 
@@ -13,7 +13,7 @@ int main(){
     int opcao, numero_hospedes;
     char *nome;
     int cpf[11];
-
+    
     nome = (char *) malloc(50*sizeof(char));
 
     FILE *fp;
