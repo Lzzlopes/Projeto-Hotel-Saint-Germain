@@ -1,22 +1,72 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "cadastro.h"
-#include "listar_hospedes.h"
+#include 
 
-int numero_reserva = 0;
+/*#include "Listar_Hospedes.h"
+#include "Cadastro_Hospede.h"*/
+
+int ID_Hospede = 0;
+
+void cadastro_hospedes(FILE *Hc){
+
+    Hc = fopen("Hospedes Cadastrados.txt", "a");
+
+
+    //Mensagem de erro caso não consiga abrir o arquivo
+
+    if(Hc == NULL)
+    {
+        perror("Erro ao abrir o arquivo");
+    }
+
+    //Escrita no arquivo
+
+    fprinf("ID: %i", ID_Hospede);
+   
+
+}
+
+
+void Listar_hospedes(FILE *Hc){
+
+    int c;
+
+    Hc = fopen("Hospedes Cadastrados.txt", "r");
+
+    //Mensagem de erro caso não exista o arquivo Hospedes Cadastrados
+
+    if(Hc == NULL)
+    {
+        perror("Erro ao abrir o arquivo");
+    }
+
+    //Repetição de leitura até chegar ao fim do arquivo
+
+    while (1){
+        c = fgetc(Hc);
+        if (feof(Hc))
+        {
+            break;
+        }
+        printf("%c", c);
+    }
+
+    //Fechar o arquivo
+
+    fclose(Hc);
+
+}
+
 
 int main(){
 
     //Declarações
 
     int opcao, numero_hospedes;
-    char *nome;
-    int cpf[11];
-    
-    nome = (char *) malloc(50*sizeof(char));
-
-    FILE *fp;
+    char *nome = (char *) malloc(50*sizeof(char));
+    int cpf;
+    FILE *Hc;
 
     //Fim declarações
 
@@ -28,6 +78,7 @@ int main(){
     printf("\n1 - Criar uma conta\n");    
     printf("\n2 -  Listar hóspedes do hotel\n");
     printf("\n3 - Excluir hóspede do hotel\n");
+    printf("\n4 - Sair");
     
     scanf("%i", &opcao);
 
@@ -36,30 +87,19 @@ int main(){
 
     case 1 /*Cadastro de novo hóspede*/:
 
-        cadastro_hospedes(&nome, &cpf, &numero_hospedes, &numero_reserva);
-
-        printf("Numero da reserva: %i", numero_reserva);
-        printf("Nome do hóspede: %s", nome);
-        printf("CPF: %i", cpf);        
-        printf("Numero de hóspedes: %i", numero_hospedes);
-
-        break;
+        cadastro_hospedes(Hc);
 
     case 2 /*Listar Hóspedes cadastrados do hotel*/:
 
-        Listar_Clientes();
+        Listar_hospedes(Hc);
 
-        break;
+
 
     case 3 /*Excluir Hóspede do hotel*/:
 
-
-        break;
     
-    default:
-        break;
+    case 4:
+        return 0;
     }
 
-
-    return 0;
 }
