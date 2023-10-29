@@ -1,11 +1,29 @@
+/* Requisitos:
+
+*Pedro* - Cadastrar um novo cliente com todas as particularidades que o ramo de atuação exigir;
+
+*Luiz* - Listar todos cliente, de forma ordenada (numérica ou Alfabética) a ser escolhido pelo operador; OK
+
+*Luiz* - Consultar um cliente a partir do CPF cadastrado, listando todas suas informação, sendo obrigatória a validação do CPF no momento do cadastro;
+
+*Pedro*- Desativar um cliente;
+
+*Luiz* - Excluir um cliente;
+
+*Pedro*- Vender um serviço / realizar um pedido (A depender do tema abordado);
+
+- Sair;
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <locale.h>
+#include "struct_cadastro.h"
 
-/*#include "Listar_Hospedes.h"
-#include "Cadastro_Hospede.h"*/
+int ID_Hospede = 1;
 
+// ilustração
 void cabecalho(){
     printf("\t\t\t       ___________________________________________  \n");
     printf("\t\t\t      |                                           |  \n");
@@ -38,20 +56,11 @@ void cabecalho(){
     printf("\t\t\t      |            |  |º    |  |                  |  \n");
     printf("\t\t\t      |____________|__|_____|__|__________________|  \n");
     printf("\n\n\n\n");
-}
-
-int ID_Hospede = 1;
-
-struct cadastro
-{
-    int opcao, numero_hospedes;
-    char nome [50];
-    int cpf;
-    FILE *Hc;
 };
+//Fim ilustração
 
-struct cadastro cad;
 
+//cadastro de novos hóspedes
 void cadastro_hospedes(){
 
     int i;
@@ -60,11 +69,11 @@ void cadastro_hospedes(){
 
     cad.Hc = fopen("Hospedes Cadastrados.txt", "a");
 
-    //Mensagem de erro caso nÃ£o consiga abrir o arquivo
+    //Mensagem de erro caso não consiga abrir o arquivo
 
     if(cad.Hc == NULL)
     {
-        perror("Erro ao abrir o arquivo");
+        printf("Erro ao abrir o arquivo");
         exit(1);
     }
 
@@ -86,23 +95,25 @@ void cadastro_hospedes(){
 
     ID_Hospede +=1;
 }
+//Fim Cadastro
 
 
+//Listar todos os hóspedes
 void Listar_hospedes(){
 
     int c;
 
     cad.Hc = fopen("Hospedes Cadastrados.txt", "r");
 
-    //Mensagem de erro caso nÃ£o exista o arquivo Hospedes Cadastrados
+    //Mensagem de erro caso não exista o arquivo Hospedes Cadastrados
 
     if(cad.Hc == NULL)
     {
-        perror("Erro ao abrir o arquivo");
+        printf("Erro ao abrir o arquivo");
         exit(1);
     }
 
-    //RepetiÃ§Ã£o de leitura atÃ© chegar ao fim do arquivo
+    //Repetição de leitura até chegar ao fim do arquivo
 
     while (1){
         c = fgetc(cad.Hc);
@@ -118,6 +129,41 @@ void Listar_hospedes(){
     fclose(cad.Hc);
 
 }
+//Fim listar todos os hospedes
+
+//Listar Informações de um hóspede específico
+void Listar_info_hospede(){
+
+    int cpf, c;
+
+    cad.Hc = fopen("Hospedes Cadastrados.txt", "r");
+
+    //Mensagem de erro caso não exista o arquivo Hospedes Cadastrados
+
+    if(cad.Hc == NULL)
+    {
+        printf("Erro ao abrir o arquivo");
+        exit(1);
+    }
+
+    printf("Qual o CPF do hóspede?");
+    scanf("%i", &cpf);
+
+    while (fread(&cad, sizeof(cad), 1, cad.Hc))
+    {
+        if (strcmp(cpf, cad.cpf))
+        {
+            while (1)
+            {
+            c = fgetc(cad.Hc);
+            printf("%c", c);    
+            }
+        }
+    }
+    
+    
+}
+//Fim listar info hóspede específico
 
 int main(){
 
@@ -130,13 +176,14 @@ int main(){
 
     cabecalho();
 
-    while (opcao != 4)
+    while (opcao != 5)
     {
         printf("Escolha uma opção:\n");
         printf("\n1 - Criar uma conta\n");    
         printf("\n2 -  Listar hóspedes do hotel\n");
-        printf("\n3 - Excluir hóspede do hotel\n");
-        printf("\n4 - Sair\n");
+        printf("\n3 - Mostar informações de hóspede\n");
+        printf("\n4 - Excluir hóspede do hotel\n");
+        printf("\n5 - Sair\n");
         
         scanf("%i", &opcao);
 
@@ -151,7 +198,10 @@ int main(){
 
                 Listar_hospedes();
                 break;
-            case 3:    /*Excluir Hóspede do hotel*/
+            case 3: /*Listar Hóspede*/
+                Listar_info_hospede();
+                break;
+            case 4:    /*Excluir Hóspede do hotel*/
                 printf("nao feito :)");
                 break;
         }
