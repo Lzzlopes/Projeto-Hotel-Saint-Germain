@@ -23,6 +23,13 @@
 
 int ID_Hospede = 1;
 
+typedef struct cadastro CADASTRO;
+struct cadastro
+{
+    char nome [50], email [30], estado[3], cidade[30];
+    int telefone, cpf;
+};
+
 // ilustração
 void cabecalho(){
     printf("\t\t\t       ___________________________________________  \n");
@@ -98,7 +105,7 @@ void cadastro_hospedes(){
 //Fim Cadastro
 
 
-//Listar todos os hóspedes
+//Listar todos os hóspedes - falta ordenação
 void Listar_hospedes(){
 
     int c;
@@ -131,39 +138,60 @@ void Listar_hospedes(){
 }
 //Fim listar todos os hospedes
 
-//Listar Informações de um hóspede específico
+//Listar Informações de um hóspede específico - testar
 void Listar_info_hospede(){
 
-    int cpf, c;
+    int cpf, flag = 1;
+    struct cadastro search;
+    char opcao[1];
 
-    cad.Hc = fopen("Hospedes Cadastrados.txt", "r");
+    FILE *Hc = fopen("Hospedes Cadastrados.txt", "r");
 
     //Mensagem de erro caso não exista o arquivo Hospedes Cadastrados
 
-    if(cad.Hc == NULL)
+    if(Hc == NULL)
     {
         printf("Erro ao abrir o arquivo");
         exit(1);
     }
-
-    printf("Qual o CPF do hóspede?");
+    
+    printf("Insira o CPF do hóspede que deseja ver os dados: ");
     scanf("%i", &cpf);
 
-    while (fread(&cad, sizeof(cad), 1, cad.Hc))
-    {
-        if (strcmp(cpf, cad.cpf))
-        {
-            while (1)
-            {
-            c = fgetc(cad.Hc);
-            printf("%c", c);    
-            }
+    while (fread(&search, sizeof(CADASTRO), 1, Hc) == 1) {
+    
+        if(strncmp(search.cpf, cpf, 11) == 0){
+            flag = 0;
+        printf("Informações do hóspede a ser excluído: ");
+        printf("Nome: %s\n", search.nome);
+        printf("CPF: %i", search.cpf);
+        printf("Email: %s", search.email);
+        printf("Estado: %s", search.estado);
+        printf("Cidade: %s", search.cidade);
+        printf("Telefone: %i", search.telefone);
+
+        printf("Confirmar exclusão? s/n");
+        
+
         }
+    }    
+    if(flag == 1){
+    printf("Hóspede não encontrado!");
     }
-    
-    
+
+    printf("Pressione uma tecla para continuar...");
+    getchar();
+
+    fclose(Hc);
+    return;
 }
 //Fim listar info hóspede específico
+
+//Excluir CLiente
+void Excluir_cliente(){
+
+}
+//Fim excluir cliente
 
 int main(){
 
