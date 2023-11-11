@@ -23,13 +23,6 @@
 
 int ID_Hospede = 1;
 
-typedef struct cadastro CADASTRO;
-struct cadastro
-{
-    char nome [50], email [30], estado[3], cidade[30];
-    int telefone, cpf;
-};
-
 // ilustração
 void cabecalho(){
     printf("\t\t\t       ___________________________________________  \n");
@@ -70,37 +63,7 @@ void cabecalho(){
 //cadastro de novos hóspedes
 void cadastro_hospedes(){
 
-    int i;
-
-    getchar();
-
-    cad.Hc = fopen("Hospedes Cadastrados.txt", "a");
-
-    //Mensagem de erro caso não consiga abrir o arquivo
-
-    if(cad.Hc == NULL)
-    {
-        printf("Erro ao abrir o arquivo");
-        exit(1);
-    }
-
-    //Escrita no arquivo
-
-    fprintf(cad.Hc, "ID: %i\n", ID_Hospede);
-
-    printf("Digite seu nome: ");
-    gets(cad.nome);
-    cad.nome[strcspn(cad.nome, "\n")] = '\0';
-
-    for (i = 0; i < strlen(cad.nome); i++)
-    {
-        fputc(cad.nome[i], cad.Hc);
-    }
-    fprintf(cad.Hc, "\n");
-
-   fclose(cad.Hc);
-
-    ID_Hospede +=1;
+    
 }
 //Fim Cadastro
 
@@ -110,11 +73,11 @@ void Listar_hospedes(){
 
     int c;
 
-    cad.Hc = fopen("Hospedes Cadastrados.txt", "r");
+    FILE *Hc = fopen("Hospedes Cadastrados.txt", "r");
 
     //Mensagem de erro caso não exista o arquivo Hospedes Cadastrados
 
-    if(cad.Hc == NULL)
+    if(Hc == NULL)
     {
         printf("Erro ao abrir o arquivo");
         exit(1);
@@ -123,8 +86,8 @@ void Listar_hospedes(){
     //Repetição de leitura até chegar ao fim do arquivo
 
     while (1){
-        c = fgetc(cad.Hc);
-        if (feof(cad.Hc))
+        c = fgetc(Hc);
+        if (feof(Hc))
         {
             break;
         }
@@ -133,7 +96,7 @@ void Listar_hospedes(){
 
     //Fechar o arquivo
 
-    fclose(cad.Hc);
+    fclose(Hc);
 
 }
 //Fim listar todos os hospedes
@@ -143,7 +106,51 @@ void Listar_info_hospede(){
 
     int cpf, flag = 1;
     struct cadastro search;
-    char opcao[1];
+    char opcao;
+
+    FILE *Hc = fopen("Hospedes Cadastrados.txt", "r");
+
+    //Mensagem de erro caso não exista o arquivo Hospedes Cadastrados
+
+    if(Hc == NULL)
+    {
+        printf("Erro ao abrir o arquivo");
+        exit(1);
+    }
+    
+    printf("Insira o CPF do hóspede que deseja ver os dados: ");
+    scanf("%i", &cpf);
+
+    while (fread(&search, sizeof(CADASTRO), 1, Hc) == 1) {
+    
+        if(strncmp(search.cpf, cpf, 11) == 0){
+            flag = 0;
+        printf("Informações do hóspede a ser excluído: ");
+        printf("Nome: %s\n", search.nome);
+        printf("CPF: %i", search.cpf);
+        printf("Email: %s", search.email);
+        printf("Estado: %s", search.estado);
+        printf("Cidade: %s", search.cidade);
+        printf("Telefone: %i", search.telefone);
+        }
+    }
+    if(flag == 1){
+    printf("Hóspede não encontrado!");
+    }
+
+    printf("Pressione uma tecla para continuar...");
+    getchar();
+
+    fclose(Hc);
+    return;
+}
+//Fim listar info hóspede específico
+
+//Excluir CLiente - testar
+void Excluir_cliente(){
+        int cpf, flag = 1;
+    struct cadastro search;
+    char opcao;
 
     FILE *Hc = fopen("Hospedes Cadastrados.txt", "r");
 
@@ -171,6 +178,34 @@ void Listar_info_hospede(){
         printf("Telefone: %i", search.telefone);
 
         printf("Confirmar exclusão? s/n");
+        opcao = getchar();
+        if (opcao == 's' || opcao == 'S')
+        {
+            FILE *temp = fopen("temporario.txt", "w");
+            fclose(temp);
+            Hc = fopen("Hospedes Cadastrados.txt", "r");
+            while (fread(&search, sizeof(CADASTRO), 1, Hc) == 1)
+            {
+                if (!strcmp(search.cpf, cpf) == 0)
+                {
+                    temp = fopen("temporario.txt", "a");
+                    fwrite(&search, sizeof(CADASTRO), 1, temp);
+                    fclose(temp);
+                }
+                
+            }
+
+            fclose(Hc);
+            remove("Hospedes Cadastrados.txt");
+            rename("temporario.txt", "Hospedes Cadastrados.txt");
+            
+            printf("Exclusão bem sucedida");
+
+        } 
+        else if((opcao == 'n') || (opcao == 'N')){
+            fclose(Hc);
+            printf("Exclusão de hóspede cancelada pelo usuário");
+        }
         
 
         }
@@ -184,12 +219,6 @@ void Listar_info_hospede(){
 
     fclose(Hc);
     return;
-}
-//Fim listar info hóspede específico
-
-//Excluir CLiente
-void Excluir_cliente(){
-
 }
 //Fim excluir cliente
 
