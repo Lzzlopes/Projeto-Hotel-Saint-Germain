@@ -4,11 +4,11 @@
 
 *Luiz* - Listar todos cliente, de forma ordenada (numérica ou Alfabética) a ser escolhido pelo operador; OK
 
-*Luiz* - Consultar um cliente a partir do CPF cadastrado, listando todas suas informação, sendo obrigatória a validação do CPF no momento do cadastro;
+*Luiz* - Consultar um cliente a partir do CPF cadastrado, listando todas suas informação, sendo obrigatória a validação do CPF no momento do cadastro; TESTAR
 
 *Pedro*- Desativar um cliente;
 
-*Luiz* - Excluir um cliente;
+*Luiz* - Excluir um cliente; OK
 
 *Pedro*- Vender um serviço / realizar um pedido (A depender do tema abordado);
 
@@ -67,11 +67,31 @@ void cadastro_hospedes(){
 }
 //Fim Cadastro
 
+//Ordenação
+void selectionSort(struct cadastro *hospedes, int num_hospedes) {
+    int i, j, min_idx;
+    struct cadastro temp;
 
-//Listar todos os hóspedes - falta ordenação
+    for (i = 0; i < num_hospedes - 1; i++) {
+        min_idx = i;
+        for (j = i + 1; j < num_hospedes; j++) {
+            if (strcmp(hospedes[j].cpf, hospedes[min_idx].cpf) < 0) {
+                min_idx = j;
+            }
+        }
+        // Troca os hóspedes na posição i e min_idx
+        temp = hospedes[i];
+        hospedes[i] = hospedes[min_idx];
+        hospedes[min_idx] = temp;
+    }
+}
+//Fim Ordenação
+
+//Listar todos os hóspedes - OK
 void Listar_hospedes(){
 
-    int c;
+    int i, num_hospedes;
+    
 
     FILE *Hc = fopen("Hospedes Cadastrados.txt", "r");
 
@@ -83,30 +103,51 @@ void Listar_hospedes(){
         exit(1);
     }
 
-    //Repetição de leitura até chegar ao fim do arquivo
+    //contar o numero de hospedes
 
-    while (1){
-        c = fgetc(Hc);
-        if (feof(Hc))
-        {
-            break;
-        }
-        printf("%c", c);
+    fseek(Hc, 0, SEEK_END);
+    num_hospedes = ftell(Hc) / sizeof(CADASTRO);
+    rewind(Hc);
+
+    //Alocar memória
+
+    struct cadastro *hospedes = (struct cadastro *) malloc(num_hospedes * sizeof(struct cadastro));
+
+    if(hospedes == NULL)
+    {
+        printf("Erro na alocação de memória");
+        fclose(Hc);
+        exit(1);
     }
-
-    //Fechar o arquivo
+    
+    fread(hospedes, sizeof(struct cadastro), num_hospedes, Hc);
 
     fclose(Hc);
 
+    selectionSort(hospedes, num_hospedes);
+
+    printf("\n");
+    for (i = 0; i < num_hospedes; i++)
+    {
+        printf("CPF: %s", hospedes[i].cpf);
+        printf("Nome: %s", hospedes[i].nome);
+        printf("Email: %s", hospedes[i].email);
+        printf("Estado: %s", hospedes[i].estado);
+        printf("Cidade: %s", hospedes[i].cidade);
+        printf("Telefone: %i", hospedes[i].telefone);
+    }
+
+    free(hospedes);
+    
 }
 //Fim listar todos os hospedes
 
 //Listar Informações de um hóspede específico - testar
 void Listar_info_hospede(){
 
-    int cpf, flag = 1;
+    int flag = 1;
+    char cpf[12];
     struct cadastro search;
-    char opcao;
 
     FILE *Hc = fopen("Hospedes Cadastrados.txt", "r");
 
@@ -119,15 +160,15 @@ void Listar_info_hospede(){
     }
     
     printf("Insira o CPF do hóspede que deseja ver os dados: ");
-    scanf("%i", &cpf);
+    fgets(cpf, sizeof(cpf), stdin);
 
     while (fread(&search, sizeof(CADASTRO), 1, Hc) == 1) {
     
-        if(strncmp(search.cpf, cpf, 11) == 0){
+        if(strcmp(search.cpf, cpf) == 0){
             flag = 0;
         printf("Informações do hóspede a ser excluído: ");
         printf("Nome: %s\n", search.nome);
-        printf("CPF: %i", search.cpf);
+        printf("CPF: %s", search.cpf);
         printf("Email: %s", search.email);
         printf("Estado: %s", search.estado);
         printf("Cidade: %s", search.cidade);
@@ -146,11 +187,11 @@ void Listar_info_hospede(){
 }
 //Fim listar info hóspede específico
 
-//Excluir CLiente - testar
+//Excluir CLiente - OK
 void Excluir_cliente(){
-        int cpf, flag = 1;
+    int flag = 1;
     struct cadastro search;
-    char opcao;
+    char opcao, cpf[12];
 
     FILE *Hc = fopen("Hospedes Cadastrados.txt", "r");
 
@@ -163,7 +204,7 @@ void Excluir_cliente(){
     }
     
     printf("Insira o CPF do hóspede que deseja ver os dados: ");
-    scanf("%i", &cpf);
+    fgets(cpf, sizeof(cpf), stdin);
 
     while (fread(&search, sizeof(CADASTRO), 1, Hc) == 1) {
     
@@ -171,7 +212,7 @@ void Excluir_cliente(){
             flag = 0;
         printf("Informações do hóspede a ser excluído: ");
         printf("Nome: %s\n", search.nome);
-        printf("CPF: %i", search.cpf);
+        printf("CPF: %s", search.cpf);
         printf("Email: %s", search.email);
         printf("Estado: %s", search.estado);
         printf("Cidade: %s", search.cidade);
@@ -192,7 +233,6 @@ void Excluir_cliente(){
                     fwrite(&search, sizeof(CADASTRO), 1, temp);
                     fclose(temp);
                 }
-                
             }
 
             fclose(Hc);
@@ -259,7 +299,7 @@ int main(){
                 Listar_info_hospede();
                 break;
             case 4:    /*Excluir Hóspede do hotel*/
-                printf("nao feito :)");
+                Excluir_cliente();
                 break;
         }
     }

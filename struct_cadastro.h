@@ -4,8 +4,8 @@
 typedef struct cadastro CADASTRO;
 struct cadastro
 {
-    char nome [50], email [30], estado[3], cidade[30];
-    int telefone, cpf;
+    char nome [50], email [30], estado[3], cidade[30], cpf[12];
+    int telefone;
 };
 
 #endif
