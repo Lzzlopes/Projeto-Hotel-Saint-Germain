@@ -1,18 +1,18 @@
 /* Requisitos:
 
-*Pedro* - Cadastrar um novo cliente com todas as particularidades que o ramo de atuação exigir;
+Cadastrar um novo cliente com todas as particularidades que o ramo de atuação exigir;
 
-*Luiz* - Listar todos cliente, de forma ordenada (numérica ou Alfabética) a ser escolhido pelo operador; OK
+Listar todos cliente, de forma ordenada (numérica ou Alfabética) a ser escolhido pelo operador; OK
 
-*Luiz* - Consultar um cliente a partir do CPF cadastrado, listando todas suas informação, sendo obrigatória a validação do CPF no momento do cadastro; TESTAR
+Consultar um cliente a partir do CPF cadastrado, listando todas suas informação, sendo obrigatória a validação do CPF no momento do cadastro; TESTAR
 
-*Pedro*- Desativar um cliente;
+Desativar um cliente;
 
-*Luiz* - Excluir um cliente; OK
+Excluir um cliente; OK
 
-*Pedro*- Vender um serviço / realizar um pedido (A depender do tema abordado);
+Vender um serviço / realizar um pedido (A depender do tema abordado);
 
-- Sair;
+Sair;
 */
 
 #include <stdio.h>
